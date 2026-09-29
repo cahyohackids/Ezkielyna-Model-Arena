@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f1c">
+<title>PIXELBOUND: Lost Signal</title>
+<!-- suppress the default favicon request; a pixel-art one is generated at runtime -->
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div id="rotate-hint">ROTATE DEVICE<br><span>landscape recommended</span></div>
+
+<div id="game-container">
+  <canvas id="game-canvas" width="480" height="270"></canvas>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div id="hud-health" aria-label="energy cells">
+        <span class="cell"></span><span class="cell"></span><span class="cell"></span>
+      </div>
+      <div id="hud-bits" class="hud-stat">
+        <span class="stat-icon" id="bit-icon"></span>
+        <span id="bits-count">0 / 0</span>
+      </div>
+      <div id="hud-cores" class="hud-stat">
+        <span class="stat-icon core" id="core-icon"></span>
+        <span id="cores-count">0 / 3</span>
+      </div>
+    </div>
+    <div id="hud-right">
+      <div id="hud-dash" aria-label="dash cooldown">
+        <div id="dash-fill"></div>
+      </div>
+      <button id="hud-pause" class="hud-button" aria-label="pause">II</button>
+    </div>
+  </div>
+
+  <div id="hint" class="hidden"></div>
+
+  <!-- ============ TOUCH CONTROLS ============ -->
+  <div id="touch-controls" class="hidden">
+    <button class="tbtn tbtn-move" data-action="left" aria-label="move left">&#9664;</button>
+    <button class="tbtn tbtn-move" data-action="right" aria-label="move right">&#9654;</button>
+    <button class="tbtn tbtn-jump" data-action="jump" aria-label="jump">&#9650;</button>
+    <button class="tbtn tbtn-dash" data-action="dash" aria-label="dash">&gt;&gt;</button>
+  </div>
+
+  <!-- ============ MENU LAYER ============ -->
+  <div id="menu-layer">
+
+    <!-- Main menu -->
+    <div id="main-menu" class="menu">
+      <div class="title-block">
+        <h1 class="title-main">PIXELBOUND</h1>
+        <p class="title-sub">LOST&nbsp;SIGNAL</p>
+        <div class="title-line"></div>
+      </div>
+      <div class="menu-buttons">
+        <button class="mbtn primary" data-menu-action="play">PLAY</button>
+        <button class="mbtn" data-menu-action="levels">LEVEL SELECT</button>
+        <button class="mbtn" data-menu-action="howto">HOW TO PLAY</button>
+        <button class="mbtn" data-menu-action="settings">SETTINGS</button>
+      </div>
+      <p class="menu-footer">a courier robot &middot; restore the signal</p>
+    </div>
+
+    <!-- Level select -->
+    <div id="level-select" class="menu hidden">
+      <h2 class="menu-heading">LEVEL SELECT</h2>
+      <div id="level-cards"></div>
+      <div class="menu-buttons">
+        <button class="mbtn" data-menu-action="back-main">BACK</button>
+      </div>
+    </div>
+
+    <!-- How to play -->
+    <div id="howto-menu" class="menu hidden">
+      <h2 class="menu-heading">HOW TO PLAY</h2>
+      <div class="howto-grid">
+        <div class="howto-col">
+          <h3>CONTROLS</h3>
+          <p><span class="key">A</span> <span class="key">D</span> or <span class="key">&larr;</span> <span class="key">&rarr;</span> &mdash; move</p>
+          <p><span class="key">SPACE</span> / <span class="key">W</span> / <span class="key">&uarr;</span> &mdash; jump (hold for higher)</p>
+          <p><span class="key">SHIFT</span> &mdash; dash</p>
+          <p><span class="key">R</span> &mdash; restart &nbsp; <span class="key">ESC</span> &mdash; pause</p>
+        </div>
+        <div class="howto-col">
+          <h3>OBJECTIVE</h3>
+          <p>Guide PIP to the signal tower at the end of each level and activate it.</p>
+          <p>Collect <b>Signal Bits</b> to raise your score.</p>
+          <p>Find 3 hidden <b>Data Cores</b> per level.</p>
+          <p>Stomp enemies from above. Touching them from the side hurts.</p>
+          <p>Touch a checkpoint terminal to save your progress.</p>
+        </div>
+      </div>
+      <div class="menu-buttons">
+        <button class="mbtn" data-menu-action="back-main">BACK</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="settings-menu" class="menu hidden">
+      <h2 class="menu-heading">SETTINGS</h2>
+      <div class="settings-list">
+        <label class="setting-row">
+          <span class="setting-label">MUSIC VOLUME</span>
+          <input type="range" id="set-music" min="0" max="100" value="45">
+        </label>
+        <label class="setting-row">
+          <span class="setting-label">SFX VOLUME</span>
+          <input type="range" id="set-sfx" min="0" max="100" value="70">
+        </label>
+        <label class="setting-row checkbox-row">
+          <span class="setting-label">MUTE ALL</span>
+          <input type="checkbox" id="set-mute">
+        </label>
+        <label class="setting-row checkbox-row">
+          <span class="setting-label">SCREEN SHAKE</span>
+          <input type="checkbox" id="set-shake" checked>
+        </label>
+        <label class="setting-row checkbox-row">
+          <span class="setting-label">REDUCED MOTION</span>
+          <input type="checkbox" id="set-reduced">
+        </label>
+      </div>
+      <div class="menu-buttons">
+        <button class="mbtn" data-menu-action="back-prev">BACK</button>
+      </div>
+    </div>
+
+    <!-- Pause -->
+    <div id="pause-menu" class="menu hidden">
+      <h2 class="menu-heading">PAUSED</h2>
+      <div class="menu-buttons">
+        <button class="mbtn primary" data-menu-action="resume">RESUME</button>
+        <button class="mbtn" data-menu-action="restart">RESTART LEVEL</button>
+        <button class="mbtn" data-menu-action="settings">SETTINGS</button>
+        <button class="mbtn" data-menu-action="main-menu">MAIN MENU</button>
+      </div>
+    </div>
+
+    <!-- Game over -->
+    <div id="gameover-menu" class="menu hidden">
+      <h2 class="menu-heading danger">SIGNAL LOST</h2>
+      <p class="menu-note">connection severed &mdash; retransmit from checkpoint</p>
+      <div class="menu-buttons">
+        <button class="mbtn primary" data-menu-action="retry">RETRY</button>
+        <button class="mbtn" data-menu-action="levels">LEVEL SELECT</button>
+      </div>
+    </div>
+
+    <!-- Level complete -->
+    <div id="complete-menu" class="menu hidden">
+      <h2 class="menu-heading success">SIGNAL RESTORED</h2>
+      <div id="complete-stats"></div>
+      <div class="menu-buttons">
+        <button class="mbtn primary" data-menu-action="next">NEXT LEVEL</button>
+        <button class="mbtn" data-menu-action="restart">REPLAY</button>
+        <button class="mbtn" data-menu-action="levels">LEVEL SELECT</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

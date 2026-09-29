@@ -28,7 +28,7 @@ Same brief, but every model is called through **[Ezkielyna API](https://api.ezki
 |---|---|---|
 | DeepSeek v4.1 Flash | [`deepseek-v4.1-flash`](arena-02-built-with-ezkielyna-api/deepseek-v4.1-flash) | finished |
 | DeepSeek v4 Pro | [`deepseek-v4-pro`](arena-02-built-with-ezkielyna-api/deepseek-v4-pro) | finished |
-| Atria Dawn Preview | `atria-dawn-preview` | in progress |
+| Atria Dawn Preview | [`atria-dawn-preview`](arena-02-built-with-ezkielyna-api/atria-dawn-preview) | finished |
 
 ## Arena #03 — Last Sector: Operation Blackridge
 
