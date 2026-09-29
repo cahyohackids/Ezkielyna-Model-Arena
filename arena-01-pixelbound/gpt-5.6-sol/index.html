@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="Pixelbound: Lost Signal — an original browser platformer." />
+    <title>PIXELBOUND: Lost Signal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="game-shell" aria-label="PIXELBOUND: Lost Signal game">
+      <canvas id="game" width="960" height="540" aria-label="Game canvas"></canvas>
+
+      <div id="scanlines" aria-hidden="true"></div>
+
+      <section id="main-menu" class="screen active" aria-labelledby="game-title">
+        <div class="menu-card title-card">
+          <div class="signal-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="eyebrow">PIP TRANSMISSION // 07</p>
+          <h1 id="game-title"><span>PIXELBOUND</span><small>LOST SIGNAL</small></h1>
+          <p class="tagline">A tiny courier. A fractured world. One signal left to find.</p>
+          <nav class="menu-actions" aria-label="Main menu">
+            <button class="primary" data-action="play"><span>01</span> PLAY</button>
+            <button data-action="level-select"><span>02</span> LEVEL SELECT</button>
+            <button data-action="how-to"><span>03</span> HOW TO PLAY</button>
+            <button data-action="settings"><span>04</span> SETTINGS</button>
+          </nav>
+          <p class="menu-hint">ARROW KEYS TO NAVIGATE · ENTER TO SELECT</p>
+        </div>
+        <div class="title-scene" aria-hidden="true">
+          <div class="tower-art"><b></b><i></i><i></i><i></i></div>
+          <div class="pip-art"><span></span></div>
+          <div class="ground-art"></div>
+        </div>
+      </section>
+
+      <section id="level-select" class="screen" aria-labelledby="level-title">
+        <div class="wide-card">
+          <header class="screen-header">
+            <div><p class="eyebrow">TRANSMISSION MAP</p><h2 id="level-title">SELECT A SIGNAL</h2></div>
+            <button class="icon-btn" data-action="back" aria-label="Back">×</button>
+          </header>
+          <div id="level-cards" class="level-grid"></div>
+          <p class="keyline">Complete a signal to unlock the next sector.</p>
+        </div>
+      </section>
+
+      <section id="how-to" class="screen" aria-labelledby="how-title">
+        <div class="menu-card info-card">
+          <header class="screen-header">
+            <div><p class="eyebrow">COURIER FIELD GUIDE</p><h2 id="how-title">HOW TO PLAY</h2></div>
+            <button class="icon-btn" data-action="back" aria-label="Back">×</button>
+          </header>
+          <div class="control-grid">
+            <div><kbd>A</kbd><kbd>←</kbd><strong>MOVE LEFT</strong><p>Build speed and carry momentum.</p></div>
+            <div><kbd>D</kbd><kbd>→</kbd><strong>MOVE RIGHT</strong><p>Air control keeps jumps precise.</p></div>
+            <div><kbd>SPACE</kbd><kbd>W</kbd><strong>JUMP</strong><p>Tap for a short hop, hold to rise.</p></div>
+            <div><kbd>SHIFT</kbd><strong>DASH</strong><p>Burst sideways through tricky gaps.</p></div>
+          </div>
+          <div class="guide-strip">
+            <span><i class="bit-glyph"></i> Collect Signal Bits</span>
+            <span><i class="core-glyph"></i> Find 3 hidden Data Cores</span>
+            <span><i class="tower-glyph"></i> Restore the tower</span>
+          </div>
+          <button class="primary full" data-action="play">BEGIN TRANSMISSION</button>
+        </div>
+      </section>
+
+      <section id="settings" class="screen" aria-labelledby="settings-title">
+        <div class="menu-card settings-card">
+          <header class="screen-header">
+            <div><p class="eyebrow">SYSTEM CONFIG</p><h2 id="settings-title">SETTINGS</h2></div>
+            <button class="icon-btn" data-action="back" aria-label="Back">×</button>
+          </header>
+          <label class="setting-row"><span><strong>MUSIC</strong><small>Ambient transmission mix</small></span><input id="music-volume" type="range" min="0" max="1" value="0.35" step="0.05" /></label>
+          <label class="setting-row"><span><strong>SOUND EFFECTS</strong><small>Movement and impact cues</small></span><input id="sfx-volume" type="range" min="0" max="1" value="0.7" step="0.05" /></label>
+          <label class="setting-row"><span><strong>MUTE ALL</strong><small>Silence every channel</small></span><input id="mute" type="checkbox" /></label>
+          <label class="setting-row"><span><strong>SCREEN SHAKE</strong><small>Subtle impact feedback</small></span><input id="shake" type="checkbox" checked /></label>
+          <label class="setting-row"><span><strong>REDUCED MOTION</strong><small>Limit particles and animation</small></span><input id="reduced-motion" type="checkbox" /></label>
+          <button class="primary full" data-action="back">SAVE &amp; RETURN</button>
+        </div>
+      </section>
+
+      <section id="pause-menu" class="screen overlay" aria-labelledby="pause-title">
+        <div class="menu-card compact-card">
+          <p class="eyebrow">TRANSMISSION SUSPENDED</p><h2 id="pause-title">PAUSED</h2>
+          <button class="primary" data-action="resume">RESUME</button>
+          <button data-action="restart">RESTART LEVEL</button>
+          <button data-action="settings">SETTINGS</button>
+          <button data-action="main-menu">MAIN MENU</button>
+        </div>
+      </section>
+
+      <section id="level-complete" class="screen overlay" aria-labelledby="complete-title">
+        <div class="result-card">
+          <div class="result-signal" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="eyebrow">UPLINK STABLE</p><h2 id="complete-title">SIGNAL RESTORED</h2>
+          <div id="result-stats" class="result-stats"></div>
+          <div class="result-actions">
+            <button class="primary" data-action="next-level">NEXT LEVEL</button>
+            <button data-action="restart">REPLAY</button>
+            <button data-action="level-select">LEVEL SELECT</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="game-over" class="screen overlay" aria-labelledby="lost-title">
+        <div class="result-card lost-card">
+          <div class="broken-signal" aria-hidden="true">×</div>
+          <p class="eyebrow">CONNECTION TERMINATED</p><h2 id="lost-title">SIGNAL LOST</h2>
+          <p class="lost-copy">PIP's last checkpoint is still echoing through the static.</p>
+          <div class="result-actions">
+            <button class="primary" data-action="retry">RETRY</button>
+            <button data-action="level-select">LEVEL SELECT</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="toast" role="status" aria-live="polite"></div>
+
+      <div id="touch-controls" aria-label="Touch game controls">
+        <div class="touch-left"><button data-touch="left" aria-label="Move left">◀</button><button data-touch="right" aria-label="Move right">▶</button></div>
+        <div class="touch-right"><button class="dash-touch" data-touch="dash" aria-label="Dash">DASH</button><button class="jump-touch" data-touch="jump" aria-label="Jump">↑</button></div>
+      </div>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

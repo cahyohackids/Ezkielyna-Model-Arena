@@ -1,0 +1,243 @@
+/* ==========================================================================
+   PIXELBOUND: LOST SIGNAL — page styles.
+   The canvas owns the entire visual identity; CSS only handles letterboxing,
+   touch-control layout, and preventing scroll/zoom on mobile.
+   ========================================================================== */
+
+:root {
+  --ink:      #05070e;   /* page background */
+  --deep:     #0a1020;   /* panel base */
+  --navy:     #16203a;
+  --steel:    #2f4a7a;
+  --teal:     #4fe0cb;
+  --cream:    #f2e7cf;
+  --orange:   #f79a45;
+  --danger:   #e2564e;
+
+  --pad-size: 74px;              /* touch button diameter */
+  --pad-gap: 12px;
+  --pad-margin: max(10px, env(safe-area-inset-bottom));
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--ink);
+  color: var(--cream);
+  overflow: hidden;                 /* never scroll: the canvas is the world */
+  overscroll-behavior: none;
+  font-family: ui-monospace, "Courier New", monospace;
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  /* Subtle vignette so the letterboxed area reads as intentional. */
+  background:
+    radial-gradient(ellipse at 50% 42%, #0d1730 0%, #070b16 55%, #05070e 100%);
+}
+
+/* ── Stage & canvas ─────────────────────────────────────────────────────── */
+
+#stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#game {
+  display: block;
+  /* Width/height are set in JS to preserve the 16:9 aspect exactly. */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #05070e;
+  /* A faint frame that hints at a CRT bezel without being decorative noise. */
+  box-shadow:
+    0 0 0 1px rgba(47, 74, 122, 0.55),
+    0 0 0 3px rgba(5, 7, 14, 0.9),
+    0 18px 60px rgba(0, 0, 0, 0.65);
+  border-radius: 2px;
+  outline: none;
+}
+
+@media (max-width: 700px) {
+  #game { box-shadow: 0 0 0 1px rgba(47, 74, 122, 0.5); }
+}
+
+.noscript {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-size: 14px;
+  color: var(--cream);
+  background: var(--ink);
+  text-align: center;
+  padding: 20px;
+}
+
+/* ── Touch controls ─────────────────────────────────────────────────────── */
+
+#touch-controls {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;             /* only the buttons capture input */
+  display: none;
+  z-index: 10;
+}
+
+/* Only show touch UI on touch-capable devices, and only during play — the
+   game adds `.playing` to <body> while a level is running. */
+body.touch-visible.playing #touch-controls { display: block; }
+
+.pad {
+  position: absolute;
+  bottom: var(--pad-margin);
+  display: flex;
+  gap: var(--pad-gap);
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.move-pad  { left: max(12px, env(safe-area-inset-left)); }
+.action-pad { right: max(12px, env(safe-area-inset-right)); }
+
+.btn-t {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: var(--pad-size);
+  height: var(--pad-size);
+  border-radius: 50%;
+  border: 2px solid rgba(79, 224, 203, 0.42);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(30, 56, 84, 0.72), rgba(10, 16, 32, 0.66) 70%);
+  color: var(--teal);
+  font: inherit;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  transition: transform 80ms ease, background-color 80ms ease, border-color 80ms ease;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  touch-action: none;
+}
+
+.btn-t .glyph {
+  font-size: 24px;
+  line-height: 1;
+  transform: translateY(-1px);
+  text-shadow: 0 0 6px rgba(79, 224, 203, 0.35);
+}
+
+.btn-t .cap {
+  position: absolute;
+  bottom: 9px;
+  font-size: 7px;
+  letter-spacing: 1px;
+  opacity: 0.72;
+}
+
+.btn-t.pressed,
+.btn-t:active {
+  transform: scale(0.92);
+  background: radial-gradient(circle at 50% 38%, rgba(79, 224, 203, 0.34), rgba(16, 34, 54, 0.85) 72%);
+  border-color: rgba(157, 245, 230, 0.9);
+  color: var(--cream);
+}
+
+.btn-t:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
+
+.btn-t.jump {
+  width: calc(var(--pad-size) + 12px);
+  height: calc(var(--pad-size) + 12px);
+  border-color: rgba(247, 154, 69, 0.5);
+  color: var(--orange);
+}
+.btn-t.jump .glyph { font-size: 28px; }
+.btn-t.jump.pressed,
+.btn-t.jump:active {
+  background: radial-gradient(circle at 50% 38%, rgba(247, 154, 69, 0.32), rgba(40, 22, 12, 0.8) 72%);
+  border-color: rgba(255, 214, 160, 0.9);
+}
+
+.btn-t.dash { position: relative; }
+.btn-t.dash .glyph { letter-spacing: -2px; }
+
+.btn-t.pause {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(10px, env(safe-area-inset-right));
+  width: 44px;
+  height: 34px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.btn-t.pause .glyph { font-size: 14px; letter-spacing: 1px; }
+
+/* Landscape-only nudge on very short viewports (portrait phones). */
+@media (orientation: portrait) and (max-width: 620px) {
+  .btn-t { --pad-size: 66px; }
+  #touch-controls::after {
+    content: "Rotate to landscape for the best view";
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: rgba(242, 231, 207, 0.55);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
+/* ── First-touch hint ───────────────────────────────────────────────────── */
+
+#touch-hint {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  z-index: 20;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+body.touch-visible.playing #touch-hint { display: grid; }
+#touch-hint.hidden { opacity: 0; }
+.hint-inner {
+  padding: 10px 18px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cream);
+  background: rgba(7, 11, 22, 0.82);
+  border: 1px solid rgba(79, 224, 203, 0.4);
+  animation: hintPulse 1.8s ease-in-out infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.75; }
+  50%      { opacity: 1; }
+}
+
+/* ── Reduced motion: honour the OS setting in the CSS layer too ─────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .hint-inner { animation: none; }
+  .btn-t { transition: none; }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#101a32" />
+    <title>PIXELBOUND: Lost Signal</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="game-shell" aria-label="PIXELBOUND Lost Signal game">
+      <canvas id="game" width="1280" height="720" aria-label="PIXELBOUND gameplay canvas"></canvas>
+
+      <section class="hud hidden" id="hud" aria-live="polite">
+        <div class="hud-left">
+          <div class="brand-mini">PIXELBOUND <span>///</span></div>
+          <div id="level-label" class="level-label">SIGNAL MEADOW</div>
+        </div>
+        <div class="hud-right">
+          <div class="stat"><span class="stat-label">ENERGY</span><span class="cells" id="health"></span></div>
+          <div class="stat"><span class="diamond">◆</span><span id="bits">0 / 0</span></div>
+          <div class="stat"><span class="core-icon">◈</span><span id="cores">0 / 3</span></div>
+          <div class="dash-wrap"><span class="stat-label">DASH</span><span class="dash-meter"><i id="dash-meter"></i></span></div>
+        </div>
+      </section>
+
+      <section id="menu" class="screen active">
+        <div class="menu-signal" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p class="eyebrow">COURIER PROGRAM // ONLINE</p>
+        <h1>PIXEL<span>BOUND</span></h1>
+        <p class="subtitle">LOST SIGNAL</p>
+        <p class="menu-copy">Guide PIP across three fractured sectors.<br />Bring the relay network back online.</p>
+        <nav class="button-stack" aria-label="Main menu">
+          <button class="primary" data-action="play">Play</button>
+          <button data-action="select">Level Select</button>
+          <button data-action="howto">How to Play</button>
+          <button data-action="settings">Settings</button>
+        </nav>
+        <p class="menu-hint">A / D to move · SPACE to jump · SHIFT to dash</p>
+      </section>
+
+      <section id="level-select" class="screen panel-screen" aria-label="Level select">
+        <button class="back" data-action="menu" aria-label="Return to main menu">←</button>
+        <p class="eyebrow">RELAY NETWORK</p>
+        <h2>SELECT SECTOR</h2>
+        <div id="level-cards" class="level-cards"></div>
+      </section>
+
+      <section id="howto" class="screen panel-screen" aria-label="How to play">
+        <button class="back" data-action="menu" aria-label="Return to main menu">←</button>
+        <p class="eyebrow">FIELD MANUAL</p>
+        <h2>MOVE WITH THE SIGNAL</h2>
+        <div class="how-grid">
+          <article><kbd>A</kbd><kbd>D</kbd><h3>RUN</h3><p>Build momentum, reverse quickly, and steer in the air.</p></article>
+          <article><kbd>SPACE</kbd><h3>JUMP</h3><p>Hold for height. PIP remembers jumps pressed just before landing.</p></article>
+          <article><kbd>SHIFT</kbd><h3>DASH</h3><p>Cross wide gaps or dodge threats. Recharge after a short pause.</p></article>
+          <article><b>◆</b><h3>EXPLORE</h3><p>Find Signal Bits and hidden Data Cores. Towers restore each sector.</p></article>
+        </div>
+        <button class="primary bottom-button" data-action="play">Begin Mission</button>
+      </section>
+
+      <section id="settings" class="screen panel-screen" aria-label="Settings">
+        <button class="back" data-action="settings-back" aria-label="Return to previous menu">←</button>
+        <p class="eyebrow">SYSTEM PREFERENCES</p>
+        <h2>SETTINGS</h2>
+        <div class="settings-list">
+          <label>Music <output id="music-value">45%</output><input id="music-volume" type="range" min="0" max="100" value="45" /></label>
+          <label>SFX <output id="sfx-value">70%</output><input id="sfx-volume" type="range" min="0" max="100" value="70" /></label>
+          <label class="toggle-line">Mute <input id="mute" type="checkbox" /><span class="toggle"></span></label>
+          <label class="toggle-line">Screen shake <input id="shake" type="checkbox" checked /><span class="toggle"></span></label>
+          <label class="toggle-line">Reduced motion <input id="motion" type="checkbox" /><span class="toggle"></span></label>
+        </div>
+      </section>
+
+      <section id="pause" class="screen modal" aria-label="Pause menu">
+        <div class="modal-box"><p class="eyebrow">TRANSMISSION PAUSED</p><h2>ON HOLD</h2>
+          <nav class="button-stack"><button class="primary" data-action="resume">Resume</button><button data-action="restart">Restart Sector</button><button data-action="settings-pause">Settings</button><button data-action="menu">Main Menu</button></nav>
+        </div>
+      </section>
+
+      <section id="lost" class="screen modal" aria-label="Signal lost">
+        <div class="modal-box danger"><p class="eyebrow">PIP'S LINK WAS SEVERED</p><h2>SIGNAL LOST</h2><p id="lost-message">Routing back to the last active terminal.</p>
+          <nav class="button-stack"><button class="primary" data-action="retry">Retry</button><button data-action="select">Level Select</button></nav>
+        </div>
+      </section>
+
+      <section id="complete" class="screen modal" aria-label="Level complete">
+        <div class="modal-box complete"><p class="eyebrow">TOWER UPLINK ESTABLISHED</p><h2>SIGNAL RESTORED</h2>
+          <div id="results" class="results"></div>
+          <nav class="button-stack"><button class="primary" data-action="next">Next Sector</button><button data-action="replay">Replay</button><button data-action="select">Level Select</button></nav>
+        </div>
+      </section>
+
+      <div id="toast" class="toast" role="status"></div>
+      <div id="touch-controls" class="touch-controls" aria-label="Touch controls">
+        <div class="touch-move"><button class="touch-button" data-key="left" aria-label="Move left">◀</button><button class="touch-button" data-key="right" aria-label="Move right">▶</button></div>
+        <div class="touch-actions"><button class="touch-button dash" data-key="dash" aria-label="Dash">↯</button><button class="touch-button jump" data-key="jump" aria-label="Jump">▲</button></div>
+      </div>
+    </main>
+    <script type="module" src="js/game.js"></script>
+  </body>
+</html>

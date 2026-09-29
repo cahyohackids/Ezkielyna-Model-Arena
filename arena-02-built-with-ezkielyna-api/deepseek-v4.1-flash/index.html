@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<meta name="description" content="PIXELBOUND: LOST SIGNAL — a retro-futuristic pixel platformer. Guide courier robot PIP to restore the signal towers.">
+<title>PIXELBOUND: LOST SIGNAL</title>
+<link rel="stylesheet" href="./styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23070b16'/%3E%3Crect x='4' y='4' width='8' height='7' fill='%23e8e2d0'/%3E%3Crect x='5' y='6' width='6' height='3' fill='%234fe0cb'/%3E%3Crect x='7' y='1' width='2' height='2' fill='%23f08a35'/%3E%3C/svg%3E">
+</head>
+<body>
+  <!-- The game canvas: fixed internal resolution, CSS-scaled with letterboxing. -->
+  <main id="stage" aria-label="Game viewport">
+    <canvas id="game" width="960" height="540" aria-label="PIXELBOUND: LOST SIGNAL game canvas"></canvas>
+  </main>
+
+  <!-- Touch controls. Hidden on devices without touch; large targets, laid out
+       in the lower corners so they never cover the gameplay action. -->
+  <div id="touch-controls" aria-hidden="true">
+    <div class="pad move-pad">
+      <button id="btn-left"  class="btn-t" type="button" aria-label="Move left"><span class="glyph">&#9664;</span></button>
+      <button id="btn-right" class="btn-t" type="button" aria-label="Move right"><span class="glyph">&#9654;</span></button>
+    </div>
+    <div class="pad action-pad">
+      <button id="btn-dash" class="btn-t dash" type="button" aria-label="Dash"><span class="glyph">&#187;</span><span class="cap">DASH</span></button>
+      <button id="btn-jump" class="btn-t jump" type="button" aria-label="Jump"><span class="glyph">&#8679;</span><span class="cap">JUMP</span></button>
+    </div>
+    <button id="btn-pause" class="btn-t pause" type="button" aria-label="Pause"><span class="glyph">&#10073;&#10073;</span></button>
+  </div>
+
+  <!-- First-run hint; disappears on first touch. -->
+  <div id="touch-hint" aria-hidden="true">
+    <div class="hint-inner">TAP TO PLAY</div>
+  </div>
+
+  <noscript>
+    <p class="noscript">PIXELBOUND: LOST SIGNAL requires JavaScript to run.</p>
+  </noscript>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

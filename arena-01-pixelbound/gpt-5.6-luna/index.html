@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1226" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1727'/%3E%3Crect x='6' y='10' width='20' height='15' rx='5' fill='%233d827f' stroke='%23d8e9de' stroke-width='2'/%3E%3Ccircle cx='16' cy='7' r='3' fill='%23f6a65b'/%3E%3Cpath d='M16 10V8' stroke='%23d8e9de' stroke-width='2'/%3E%3C/svg%3E" />
+  <title>Pixelbound: Lost Signal</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="game-shell" aria-label="Pixelbound: Lost Signal">
+    <canvas id="game" width="1280" height="720" aria-label="Pixelbound game canvas"></canvas>
+
+    <header id="hud" class="hud hidden">
+      <div class="hud-left">
+        <div class="brand-chip"><span class="brand-dot"></span><span>PIP // RUN</span></div>
+        <div class="energy" aria-label="Energy"><span class="hud-label">ENERGY</span><span id="energy-cells"></span></div>
+      </div>
+      <div class="hud-center">
+        <div class="level-kicker" id="hud-level">SIGNAL MEADOW</div>
+        <div class="progress-track"><span id="progress-bar"></span></div>
+      </div>
+      <div class="hud-right">
+        <div class="stat"><span class="icon-signal">✦</span><span id="bits-label">00 / 00</span></div>
+        <div class="stat"><span class="core-mini">◆</span><span id="cores-label">0 / 3</span></div>
+        <div class="dash-meter" id="dash-meter"><span></span><b>DASH</b></div>
+        <button class="icon-button" data-action="pause" aria-label="Pause game">Ⅱ</button>
+      </div>
+    </header>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <section id="menu" class="screen active" aria-label="Main menu">
+      <div class="menu-art" aria-hidden="true"><span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span><span class="art-scan"></span></div>
+      <div class="menu-copy">
+        <div class="eyebrow"><span class="pulse"></span> A SIGNAL IS WAITING</div>
+        <h1>PIXEL<span>BOUND</span></h1>
+        <p class="subtitle">LOST SIGNAL</p>
+        <p class="intro">A tiny courier. A broken world.<br />Bring the signal home.</p>
+        <div class="menu-actions">
+          <button class="primary-button" data-action="play">PLAY <span>→</span></button>
+          <button class="secondary-button" data-action="levels">LEVEL SELECT</button>
+          <div class="button-row"><button class="text-button" data-action="howto">HOW TO PLAY</button><button class="text-button" data-action="settings">SETTINGS</button></div>
+        </div>
+        <div class="menu-foot"><span>v1.0 // SYSTEM STABLE</span><span>© PIP SIGNALWORKS</span></div>
+      </div>
+      <div class="menu-pip" aria-hidden="true"><div class="pip-shadow"></div><div class="pip-antenna"></div><div class="pip-body"><div class="pip-visor"><i></i></div><div class="pip-pack"></div></div><div class="pip-foot left"></div><div class="pip-foot right"></div></div>
+    </section>
+
+    <section id="level-select" class="screen panel-screen" aria-label="Level select">
+      <div class="panel-inner">
+        <button class="back-button" data-action="menu">← BACK</button>
+        <div class="panel-heading"><span class="eyebrow">THE ARCHIVE // 03 SECTORS</span><h2>SELECT A SECTOR</h2><p>Restore the towers. Reconnect the world.</p></div>
+        <div id="level-cards" class="level-cards"></div>
+        <div class="panel-note"><span class="signal-line"></span><span>Signal fragments persist automatically.</span><span class="signal-line"></span></div>
+      </div>
+    </section>
+
+    <section id="howto" class="screen panel-screen" aria-label="How to play">
+      <div class="panel-inner narrow">
+        <button class="back-button" data-action="menu">← BACK</button>
+        <div class="panel-heading"><span class="eyebrow">PIP FIELD MANUAL</span><h2>KEEP MOVING</h2><p>Read the world. Trust your momentum.</p></div>
+        <div class="manual-grid">
+          <div class="manual-card"><span class="keycap">A</span><span class="keycap">D</span><b>MOVE</b><small>Arrow keys also work</small></div>
+          <div class="manual-card"><span class="keycap wide">SPACE</span><b>JUMP</b><small>Hold for extra height</small></div>
+          <div class="manual-card"><span class="keycap wide">SHIFT</span><b>DASH</b><small>Recharges on the ground</small></div>
+          <div class="manual-card"><span class="keycap">R</span><b>RESTART</b><small>Return to checkpoint</small></div>
+        </div>
+        <div class="tip-box"><span class="tip-mark">✦</span><p><b>FIELD NOTE</b><br />Signal Bits hum near hidden paths. Three Data Cores are buried in every sector. Find them if you can.</p></div>
+      </div>
+    </section>
+
+    <section id="settings" class="screen panel-screen" aria-label="Settings">
+      <div class="panel-inner narrow">
+        <button class="back-button" data-action="menu">← BACK</button>
+        <div class="panel-heading"><span class="eyebrow">PIP CONFIGURATION</span><h2>SETTINGS</h2><p>Make the signal yours.</p></div>
+        <div class="settings-list">
+          <label class="setting-row"><span><b>MUSIC</b><small>Ambient signal bed</small></span><input id="music-volume" type="range" min="0" max="1" step="0.05" /><output id="music-value"></output></label>
+          <label class="setting-row"><span><b>SFX</b><small>Movement and feedback</small></span><input id="sfx-volume" type="range" min="0" max="1" step="0.05" /><output id="sfx-value"></output></label>
+          <label class="setting-row toggle-row"><span><b>MUTE ALL</b><small>Silence every channel</small></span><input id="mute-toggle" type="checkbox" /><span class="toggle-ui"></span></label>
+          <label class="setting-row toggle-row"><span><b>SCREEN SHAKE</b><small>Impact feedback</small></span><input id="shake-toggle" type="checkbox" /><span class="toggle-ui"></span></label>
+          <label class="setting-row toggle-row"><span><b>REDUCED MOTION</b><small>Calmer visual effects</small></span><input id="motion-toggle" type="checkbox" /><span class="toggle-ui"></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section id="pause" class="screen modal-screen" aria-label="Paused">
+      <div class="modal-card"><span class="eyebrow">SIGNAL HOLD // PIP PAUSED</span><h2>TAKE A BREATH</h2><div class="modal-actions"><button class="primary-button" data-action="resume">RESUME <span>→</span></button><button class="secondary-button" data-action="restart">RESTART LEVEL</button><button class="text-button" data-action="settings">SETTINGS</button><button class="text-button" data-action="menu">MAIN MENU</button></div><p class="modal-hint">ESC to resume</p></div>
+    </section>
+
+    <section id="complete" class="screen modal-screen" aria-label="Level complete">
+      <div class="complete-glow" aria-hidden="true"></div>
+      <div class="modal-card complete-card"><span class="eyebrow"><span class="pulse"></span> TOWER ONLINE</span><h2>SIGNAL<br /><em>RESTORED</em></h2><p id="complete-level" class="complete-sector"></p><div class="results"><div><small>TIME</small><b id="result-time">00:00</b></div><div><small>SIGNAL BITS</small><b id="result-bits">00 / 00</b></div><div><small>DATA CORES</small><b id="result-cores">0 / 3</b></div><div><small>DEATHS</small><b id="result-deaths">0</b></div></div><div class="modal-actions"><button class="primary-button" data-action="next">NEXT SECTOR <span>→</span></button><button class="secondary-button" data-action="replay">REPLAY</button><button class="text-button" data-action="levels">LEVEL SELECT</button></div></div>
+    </section>
+
+    <section id="gameover" class="screen modal-screen" aria-label="Signal lost">
+      <div class="modal-card"><span class="eyebrow warning">CONNECTION INTERRUPTED</span><h2>SIGNAL<br /><em>LOST</em></h2><p class="modal-copy">PIP's transmitter needs a moment to reboot.</p><div class="modal-actions"><button class="primary-button" data-action="restart">RETRY <span>↻</span></button><button class="secondary-button" data-action="levels">LEVEL SELECT</button></div></div>
+    </section>
+
+    <div id="touch-controls" class="touch-controls" aria-hidden="true"><div class="touch-cluster left-cluster"><button data-touch="left">←</button><button data-touch="right">→</button></div><div class="touch-cluster right-cluster"><button data-touch="dash">✦</button><button data-touch="jump">↑</button></div></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>

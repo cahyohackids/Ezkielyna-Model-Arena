@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101b2a">
+  <meta name="description" content="Pixelbound: Lost Signal — a tiny courier robot's journey across a broken digital frontier.">
+  <title>Pixelbound: Lost Signal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="wordmark" href="#" aria-label="Pixelbound home" id="home-mark"><span class="mark-icon">P</span><span>PIXEL<span class="word-accent">BOUND</span></span><span class="word-divider">/</span><span class="word-sub">LOST SIGNAL</span></a>
+      <div class="top-right"><span class="status-dot"></span><span class="status-copy">OFFLINE WORLD · V 1.0</span><button class="icon-button sound-button" id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">♫ <span id="sound-state">ON</span></button></div>
+    </header>
+
+    <section class="stage" aria-label="Game stage">
+      <canvas id="game" width="960" height="540" aria-label="Pixelbound game scene"></canvas>
+      <div class="hud" id="hud" aria-live="polite" hidden>
+        <div class="hud-left">
+          <div class="hud-pill health-pill" aria-label="Energy cells"><span class="hud-label">ENERGY</span><span id="health"></span></div>
+          <div class="hud-pill bits-pill"><span class="mini-glyph">✦</span><span id="bits-count">0 / 0</span></div>
+          <div class="hud-pill core-pill"><span class="core-glyph">◆</span><span id="cores-count">0 / 3</span></div>
+        </div>
+        <div class="hud-level"><span class="hud-kicker" id="hud-world">WORLD 01</span><strong id="hud-level-name">SIGNAL MEADOW</strong></div>
+        <div class="hud-right"><div class="dash-meter" id="dash-meter" aria-label="Dash ready"><span>SHIFT</span><i><b></b></i></div><button class="hud-pause" id="pause-button" aria-label="Pause">Ⅱ</button></div>
+      </div>
+
+      <div class="screen-layer" id="screen-layer" aria-live="polite"></div>
+      <div class="touch-controls" id="touch-controls" hidden aria-label="Touch controls">
+        <div class="touch-move"><button class="touch-key" data-control="left" aria-label="Move left">◀</button><button class="touch-key" data-control="right" aria-label="Move right">▶</button></div>
+        <div class="touch-actions"><button class="touch-key dash-touch" data-control="dash" aria-label="Dash">↠</button><button class="touch-key jump-touch" data-control="jump" aria-label="Jump">↑</button></div>
+      </div>
+      <div class="toast" id="toast" role="status"></div>
+    </section>
+
+    <footer class="bottomline"><span>FIELD NOTES <b>001—003</b></span><span class="footer-center">A SMALL JOURNEY THROUGH A VERY LARGE QUIET</span><span id="footer-hint">PRESS ENTER TO BEGIN</span></footer>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
