@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0a0e1a" />
+<title>PIXELBOUND: Lost Signal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0e1a'/%3E%3Crect x='6' y='2' width='4' height='4' fill='%23ff8c42'/%3E%3Crect x='6' y='7' width='4' height='6' fill='%23f2e8d5'/%3E%3Crect x='4' y='13' width='8' height='2' fill='%232a4a7f'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="game-root">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <div class="hud-group hud-left">
+          <div class="hud-health" id="hud-health" aria-label="Health"></div>
+        </div>
+        <div class="hud-group hud-center">
+          <span class="hud-bits"><span class="bit-icon"></span><span id="hud-bits">0</span><span class="hud-sep">/</span><span id="hud-bits-total">0</span></span>
+          <span class="hud-cores"><span class="core-icon"></span><span id="hud-cores">0</span>/3</span>
+        </div>
+        <div class="hud-group hud-right">
+          <button class="hud-btn" id="btn-pause" aria-label="Pause"><span class="pause-icon"></span></button>
+        </div>
+      </div>
+      <div class="hud-bottom">
+        <div class="dash-cooldown" id="dash-cooldown">
+          <div class="dash-cooldown-fill" id="dash-cooldown-fill"></div>
+          <span class="dash-label">DASH</span>
+        </div>
+        <div class="hud-time" id="hud-time">0:00.00</div>
+      </div>
+    </div>
+
+    <!-- Menus -->
+    <div id="menu-root"></div>
+
+    <!-- Touch controls -->
+    <div id="touch-controls" class="hidden">
+      <div class="touch-dpad">
+        <button class="touch-btn" id="t-left" aria-label="Move left"><span class="tri tri-l"></span></button>
+        <button class="touch-btn" id="t-right" aria-label="Move right"><span class="tri tri-r"></span></button>
+      </div>
+      <div class="touch-actions">
+        <button class="touch-btn touch-dash" id="t-dash" aria-label="Dash">DASH</button>
+        <button class="touch-btn touch-jump" id="t-jump" aria-label="Jump">JUMP</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -56,9 +56,32 @@ await send("Runtime.enable"); await send("Network.enable"); await send("Page.ena
 await send("Page.navigate", { url });
 await sleep(2500);
 const phases = [];
+const LAYOUT = `(() => {
+  const W = innerWidth, H = innerHeight, out = [];
+  const vis = (e) => { const cs = getComputedStyle(e); return cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity > 0.05; };
+  const els = [...document.querySelectorAll('button, a, [role=button], input, select')].filter(vis);
+  const off = els.filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.right <= 0 || r.left >= W || r.bottom <= 0 || r.top >= H || r.left < -2 || r.right > W + 2); });
+  if (off.length) out.push(off.length + ' visible control(s) are partly or fully outside the ' + W + 'x' + H + ' viewport, e.g. ' + off.slice(0, 3).map((e) => '"' + (e.innerText || e.getAttribute('aria-label') || e.tagName).trim().slice(0, 30) + '" at x=' + Math.round(e.getBoundingClientRect().left) + ',y=' + Math.round(e.getBoundingClientRect().top)).join('; '));
+  const cv = [...document.querySelectorAll('canvas')].sort((a, b) => b.width * b.height - a.width * a.height)[0];
+  if (cv) {
+    const r = cv.getBoundingClientRect();
+    if (r.right > W + 2 || r.bottom > H + 2 || r.left < -2 || r.top < -2) out.push('main canvas (' + Math.round(r.width) + 'x' + Math.round(r.height) + ' at ' + Math.round(r.left) + ',' + Math.round(r.top) + ') does not fit the ' + W + 'x' + H + ' viewport');
+    try {
+      const c2 = document.createElement('canvas'); c2.width = 64; c2.height = 36; const g = c2.getContext('2d'); g.drawImage(cv, 0, 0, 64, 36);
+      const d = g.getImageData(0, 0, 64, 36).data, seen = new Set();
+      for (let i = 0; i < d.length; i += 4) seen.add((d[i] >> 4) + ',' + (d[i + 1] >> 4) + ',' + (d[i + 2] >> 4));
+      out.push('main canvas shows ' + seen.size + ' distinct colours' + (seen.size <= 2 ? ' (looks BLANK — nothing visible is being drawn)' : ''));
+    } catch (e) { out.push('canvas could not be sampled'); }
+  }
+  return out.join(' | ');
+})()`;
+const layoutIssues = [];
 const snap = async (label) => {
   const r = await send("Runtime.evaluate", { expression: "document.title + ' | canvases=' + document.querySelectorAll('canvas').length + ' | text=' + (document.body?.innerText||'').replace(/\\s+/g,' ').slice(0,160)", returnByValue: true });
-  phases.push(`${label}: ${r.result?.result?.value ?? "?"} | errors so far=${errors.length}`);
+  const l = await send("Runtime.evaluate", { expression: LAYOUT, returnByValue: true });
+  const layout = l.result?.result?.value ?? "";
+  if (/outside|does not fit|BLANK/.test(layout)) layoutIssues.push(`${label}: ${layout}`);
+  phases.push(`${label}: ${r.result?.result?.value ?? "?"} | ${layout} | errors so far=${errors.length}`);
 };
 await snap("after load");
 await click(640, 400); await key("Enter", "Enter", 13); await sleep(1200);
@@ -73,5 +96,6 @@ await snap("after ~6s of play input");
 await key("Escape", "Escape", 27); await sleep(600); await key("p", "KeyP", 80); await sleep(600);
 await snap("after Escape/P (pause)");
 const uniq = (a) => [...new Set(a)];
-done({ ok: errors.length === 0 && consoleErrors.length === 0, uncaught_exceptions: uniq(errors).slice(0, 15),
+done({ ok: errors.length === 0 && consoleErrors.length === 0 && layoutIssues.length === 0, uncaught_exceptions: uniq(errors).slice(0, 15),
+  layout_issues: layoutIssues.slice(0, 6), viewport: "1280x800 desktop browser window",
   console_errors: uniq(consoleErrors).slice(0, 10), failed_requests: uniq(failedRequests).slice(0, 10), phases });

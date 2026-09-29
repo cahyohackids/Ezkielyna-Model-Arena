@@ -13,7 +13,7 @@ Every build in this folder was written by the model under test, called only thro
 | `write_file` | Create or overwrite a file |
 | `edit_file` | Change one exact snippet in a file |
 | `check_project` | ES-module syntax check, missing-import check, and page CSP rules |
-| `smoke_test` | [`harness/smoke.mjs`](harness/smoke.mjs): opens the game in headless Chrome, plays inputs for about 8 seconds, and reports runtime errors |
+| `smoke_test` | [`harness/smoke.mjs`](harness/smoke.mjs): opens the game in headless Chrome, plays inputs for about 8 seconds, and reports runtime errors, controls outside the viewport and blank canvases |
 
 - A session ends only when the model calls `finish` and both checks are clean.
 - Sessions that ran out of steps were continued from the model's own files (`--resume`, then a short `--wrapup`).
